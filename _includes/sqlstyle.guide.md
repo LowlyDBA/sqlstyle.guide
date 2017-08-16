@@ -1234,8 +1234,7 @@ ZONE
 
 A list of reserved keywords for SQL 2008 +
 
-```
-
+```sql
 ADD
 ALL
 ALTER
@@ -1425,7 +1424,7 @@ WRITETEXT
 
 A list of ISO reserved keywords for ODBC compatibility:
 
-```
+```sql
 ABSOLUTE
 ACTION
 ADA
@@ -1665,7 +1664,8 @@ ZONE
 
 Future reserved keywords for MSSQL which may be used in the future and should be avoided.
 
-```ABSOLUTE
+```sql
+ABSOLUTE
 ACTION
 ADMIN
 AFTER
