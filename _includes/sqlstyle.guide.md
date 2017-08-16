@@ -15,7 +15,7 @@ Original SQL style guide by Simon Holywell is licensed under a Creative Commons 
 * Use two-part names for isolated databases and three-part names when outside databases are being utilized.
 * Make judicious use of white space and indentation to make code easier to read.
 * Store [ISO-8601][iso-8601] compliant time and date information
-  (`YYYY-MM-DD HH:MM:SS.SSSSS`).
+  (`YYYY-MM-DD HH:MM:SS.SSSSS`) with `DATE`, `TIME`, `DATETIME2`, and `DATETIMEOFFSET`.
 * Try to use standard SQL functions instead of vendor specific functions for
   reasons of portability when functionality is the same.
 * Keep code succinct and devoid of redundant SQL—such as unnecessary quoting or
@@ -23,6 +23,7 @@ Original SQL style guide by Simon Holywell is licensed under a Creative Commons 
 * Include comments in SQL code where necessary. Use the C style opening `/*` and
   closing `*/` where possible otherwise precede comments with `--` and finish
   them with a new line.
+* End each statement with a semicolon. 
 
 ```sql
 SELECT [file_hash]  -- stored ssdeep hash
@@ -114,7 +115,7 @@ SELECT SUM([s].[monitor_tally]) AS [monitor_total]
 ### Stored procedures
 
 * The name must contain a verb.
-* Prefix with `usp_` and not `sp_` which [may conflict with system stored procedures][sp_].
+* Prefix with `usp_` and not `sp_` which may [conflict][sp_] with system stored procedures.
 
 ### Uniform suffixes
 
@@ -255,22 +256,22 @@ the closing parenthesis on a new line at the same character position as it's
 opening partner—this is especially true where you have nested subqueries.
 
 ```sql
-SELECT r.last_name,
-       (SELECT MAX(YEAR(championship_date))
-          FROM champions AS c
-         WHERE c.last_name = r.last_name
-           AND c.confirmed = 'Y') AS last_championship_year
-  FROM riders AS r
- WHERE r.last_name IN
-       (SELECT c.last_name
-          FROM champions AS c
-         WHERE YEAR(championship_date) > '2008'
-           AND c.confirmed = 'Y');
+SELECT [r].[last_name],
+       (SELECT MAX(YEAR([championship_date]))
+          FROM [champions] AS [c]
+         WHERE [c].[last_name] = [r].[last_name]
+           AND [c].[confirmed] = 'Y') AS [last_championship_year]
+  FROM [riders] AS [r]
+ WHERE [r].[last_name] IN
+       (SELECT [c].[last_name]
+          FROM [champions] AS [c]
+         WHERE YEAR([championship_date]) > '2008'
+           AND [c].[confirmed] = 'Y');
 ```
 
 ### Preferred formalisms
 
-* Use `>= AND <` instead of [BETWEEN for date ranges][between].
+* Use `>= AND <` instead of [`BETWEEN`][between] for date ranges.
 * Similarly use `IN()` instead of multiple `OR` clauses.
 * Avoid pretty-printing data for the UI within queries. Where a value needs to be 
   interpreted before leaving the database use the `CASE`
@@ -280,14 +281,14 @@ SELECT r.last_name,
   likely should be.
 
 ```sql
-SELECT CASE postcode
+SELECT CASE [postcode]
        WHEN 'BN1' THEN 'Brighton'
        WHEN 'EH1' THEN 'Edinburgh'
-       END AS city
-  FROM office_locations
- WHERE country = 'United Kingdom'
-   AND opening_time BETWEEN 8 AND 9
-   AND postcode IN ('EH1', 'BN1', 'NN1', 'KW1')
+       END AS [city]
+  FROM [office_locations]
+ WHERE [country] = 'United Kingdom'
+   AND [opening_time] BETWEEN 8 AND 9
+   AND [postcode] IN ('EH1', 'BN1', 'NN1', 'KW1');
 ```
 
 ## Create syntax
@@ -369,12 +370,13 @@ constraints along with field value validation.
 
 ##### Validation
 
-* Use `LIKE` and `SIMILAR TO` constraints to ensure the integrity of strings
+* Use `LIKE` constraints to ensure the integrity of strings
   where the format is known.
 * Where the ultimate range of a numerical value is known it must be written as a
   range `CHECK()` to prevent incorrect values entering the database or the silent
   truncation of data too large to fit the column definition. In the least it
   should check that the value is greater than zero in most cases.
+* Start and End date values should always have a constraint to ensure the End is after the Start.
 * `CHECK()` constraints should be kept in separate clauses to ease debugging.
 
 ##### Example
