@@ -1,39 +1,26 @@
-# SQL style guide
+# T-SQL style guide
 
 ## Overview
 
-You can use this set of guidelines, [fork them][fork] or make your own - the
-key here is that you pick a style and stick to it. To suggest changes
-or fix bugs please open an [issue][issue] or [pull request][pull] on GitHub.
+Intended as a guide towards clean, concise T-SQL coding standards that are as version-independent as possible. 
 
-These guidelines are designed to be compatible with Joe Celko's [SQL Programming
-Style][celko] book to make adoption for teams who have already read that book
-easier. This guide is a little more opinionated in some areas and in others a
-little more relaxed. It is certainly more succinct where [Celko's book][celko]
-contains anecdotes and reasoning behind each rule as thoughtful prose.
-
-It is easy to include this guide in [Markdown format][dl-md] as a part of a
-project's code base or reference it here for anyone on the project to freely
-read—much harder with a physical book.
-
-SQL style guide by [Simon Holywell][simon] is licensed under a [Creative Commons
-Attribution-ShareAlike 4.0 International License][licence].
-Based on a work at [http://www.sqlstyle.guide][sqlstyleguide].
+Original SQL style guide by Simon Holywell is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License. Based on a work at http://www.sqlstyle.guide.
 
 ## General
 
 ### Do
 
 * Use consistent and descriptive identifiers and names.
+* Wrap object names in square brackets.
 * Make judicious use of white space and indentation to make code easier to read.
 * Store [ISO-8601][iso-8601] compliant time and date information
   (`YYYY-MM-DD HH:MM:SS.SSSSS`).
-* Try to use only standard SQL functions instead of vendor specific functions for
-  reasons of portability.
+* Try to use standard SQL functions instead of vendor specific functions for
+  reasons of portability when functionality is the same.
 * Keep code succinct and devoid of redundant SQL—such as unnecessary quoting or
   parentheses or `WHERE` clauses that can otherwise be derived.
 * Include comments in SQL code where necessary. Use the C style opening `/*` and
-  closing `*/` where possible otherwise precede comments with `--` and finish
+  closing `*/` where possible otherwise preceed comments with `--` and finish
   them with a new line.
 
 ```sql
@@ -52,7 +39,6 @@ UPDATE file_system
 ### Avoid
 
 * CamelCase—it is difficult to scan quickly.
-* Descriptive prefixes or Hungarian notation such as `sp_` or `tbl`.
 * Plurals—use the more natural collective term where possible instead. For example
   `staff` instead of `employees` or `people` instead of `individuals`.
 * Quoted identifiers—if you must use them then stick to SQL92 double quotes for
@@ -176,23 +162,11 @@ the readers eye to scan over the code and separate the keywords from the
 implementation detail. Rivers are [bad in typography][rivers], but helpful here.
 
 ```sql
-(SELECT f.species_name,
-        AVG(f.height) AS average_height, AVG(f.diameter) AS average_diameter
-   FROM flora AS f
-  WHERE f.species_name = 'Banksia'
-     OR f.species_name = 'Sheoak'
-     OR f.species_name = 'Wattle'
-  GROUP BY f.species_name, f.observation_date)
-
-  UNION ALL
-
-(SELECT b.species_name,
-        AVG(b.height) AS average_height, AVG(b.diameter) AS average_diameter
-   FROM botanic_garden_flora AS b
-  WHERE b.species_name = 'Banksia'
-     OR b.species_name = 'Sheoak'
-     OR b.species_name = 'Wattle'
-  GROUP BY b.species_name, b.observation_date)
+SELECT f.average_height, f.average_diameter
+  FROM flora AS f
+ WHERE f.species_name = 'Banksia'
+    OR f.species_name = 'Sheoak'
+    OR f.species_name = 'Wattle';
 ```
 
 Notice that `SELECT`, `FROM`, etc. are all right aligned while the actual column
@@ -292,8 +266,7 @@ SELECT r.last_name,
 
 ### Preferred formalisms
 
-* Make use of `BETWEEN` where possible instead of combining multiple statements
-  with `AND`.
+* Use >= AND < instead of [BETWEEN for date ranges](http://sqlblog.com/blogs/aaron_bertrand/archive/2009/10/16/bad-habits-to-kick-mishandling-date-range-queries.aspx).
 * Similarly use `IN()` instead of multiple `OR` clauses.
 * Where a value needs to be interpreted before leaving the database use the `CASE`
   expression. `CASE` statements can be nested to form more complex logical structures.
@@ -1259,27 +1232,715 @@ ZEROFILL
 ZONE
 ```
 
-[simon]: https://www.simonholywell.com/?utm_source=sqlstyle.guide&utm_medium=link&utm_campaign=md-document
-    "SimonHolywell.com"
-[issue]: https://github.com/treffynnon/sqlstyle.guide/issues
-    "SQL style guide issues on GitHub"
-[fork]: https://github.com/treffynnon/sqlstyle.guide/fork
-    "Fork SQL style guide on GitHub"
-[pull]: https://github.com/treffynnon/sqlstyle.guide/pulls/
-    "SQL style guide pull requests on GitHub"
-[celko]: https://www.amazon.com/gp/product/0120887975/ref=as_li_ss_tl?ie=UTF8&linkCode=ll1&tag=treffynnon-20&linkId=9c88eac8cd420e979675c815771313d5
-    "Joe Celko's SQL Programming Style (The Morgan Kaufmann Series in Data Management Systems)"
-[dl-md]: https://raw.githubusercontent.com/treffynnon/sqlstyle.guide/gh-pages/_includes/sqlstyle.guide.md
-    "Download the guide in Markdown format"
-[iso-8601]: https://en.wikipedia.org/wiki/ISO_8601
-    "Wikipedia: ISO 8601"
-[rivers]: http://practicaltypography.com/one-space-between-sentences.html
-    "Practical Typography: one space between sentences"
-[reserved-keywords]: #reserved-keyword-reference
-    "Reserved keyword reference" 
-[eav]: https://en.wikipedia.org/wiki/Entity%E2%80%93attribute%E2%80%93value_model
-    "Wikipedia: Entity–attribute–value model"
-[sqlstyleguide]: http://www.sqlstyle.guide
+A list of reserved keywords for SQL 2008 +
+
+```
+
+ADD
+ALL
+ALTER
+AND
+ANY
+AS
+ASC
+AUTHORIZATION
+BACKUP
+BEGIN
+BETWEEN
+BREAK
+BROWSE
+BULK
+BY
+CASCADE
+CASE
+CHECK
+CHECKPOINT
+CLOSE
+CLUSTERED
+COALESCE
+COLLATE
+COLUMN
+COMMIT
+COMPUTE
+CONSTRAINT
+CONTAINS
+CONTAINSTABLE
+CONTINUE
+CONVERT
+CREATE
+CROSS
+CURRENT
+CURRENT_DATE
+CURRENT_TIME
+CURRENT_TIMESTAMP
+CURRENT_USER
+CURSOR
+DATABASE
+DBCC
+DEALLOCATE
+DECLARE
+DEFAULT
+DELETE
+DENY
+DESC
+DISK
+DISTINCT
+DISTRIBUTED
+DOUBLE
+DROP
+DUMP
+ELSE
+END
+ERRLVL
+ESCAPE
+EXCEPT
+EXEC
+EXECUTE
+EXISTS
+EXIT
+EXTERNAL
+FETCH
+FILE
+FILLFACTOR
+FOR
+FOREIGN
+FREETEXT
+FREETEXTTABLE
+FROM
+FULL
+FUNCTION
+GOTO
+GRANT
+GROUP
+HAVING
+HOLDLOCK
+IDENTITY
+IDENTITY_INSERT
+IDENTITYCOL
+IF
+IN
+INDEX
+INNER
+INSERT
+INTERSECT
+INTO
+IS
+JOIN
+KEY
+KILL
+LEFT
+LIKE
+LINENO
+LOAD
+MERGE
+NATIONAL
+NOCHECK
+NONCLUSTERED
+NOT
+NULL
+NULLIF
+OF
+OFF
+OFFSETS
+ON
+OPEN
+OPENDATASOURCE
+OPENQUERY
+OPENROWSET
+OPENXML
+OPTION
+OR
+ORDER
+OUTER
+OVER
+PERCENT
+PIVOT
+PLAN
+PRECISION
+PRIMARY
+PRINT
+PROC
+PROCEDURE
+PUBLIC
+RAISERROR
+READ
+READTEXT
+RECONFIGURE
+REFERENCES
+REPLICATION
+RESTORE
+RESTRICT
+RETURN
+REVERT
+REVOKE
+RIGHT
+ROLLBACK
+ROWCOUNT
+ROWGUIDCOL
+RULE
+SAVE
+SCHEMA
+SECURITYAUDIT
+SELECT
+SEMANTICKEYPHRASETABLE
+SEMANTICSIMILARITYDETAILSTABLE
+SEMANTICSIMILARITYTABLE
+SESSION_USER
+SET
+SETUSER
+SHUTDOWN
+SOME
+STATISTICS
+SYSTEM_USER
+TABLE
+TABLESAMPLE
+TEXTSIZE
+THEN
+TO
+TOP
+TRAN
+TRANSACTION
+TRIGGER
+TRUNCATE
+TRY_CONVERT
+TSEQUAL
+UNION
+UNIQUE
+UNPIVOT
+UPDATE
+UPDATETEXT
+USE
+USER
+VALUES
+VARYING
+VIEW
+WAITFOR
+WHEN
+WHERE
+WHILE
+WITH
+WITHIN GROUP
+WRITETEXT
+```
+
+A list of ISO reserved keywords for ODBC compatibility:
+
+```
+ABSOLUTE
+ACTION
+ADA
+ADD
+ALL
+ALLOCATE
+ALTER
+AND
+ANY
+ARE
+AS
+ASC
+ASSERTION
+AT
+AUTHORIZATION
+AVG
+BEGIN
+BETWEEN
+BIT
+BIT_LENGTH
+BOTH
+BY
+CASCADE
+CASCADED
+CASE
+CAST
+CATALOG
+CHAR
+CHAR_LENGTH
+CHARACTER
+CHARACTER_LENGTH
+CHECK
+CLOSE
+COALESCE
+COLLATE
+COLLATION
+COLUMN
+COMMIT
+CONNECT
+CONNECTION
+CONSTRAINT
+CONSTRAINTS
+CONTINUE
+CONVERT
+CORRESPONDING
+COUNT
+CREATE
+CROSS
+CURRENT
+CURRENT_DATE
+CURRENT_TIME
+CURRENT_TIMESTAMP
+CURRENT_USER
+CURSOR
+DATE
+DAY
+DEALLOCATE
+DEC
+DECIMAL
+DECLARE
+DEFAULT
+DEFERRABLE
+DEFERRED
+DELETE
+DESC
+DESCRIBE
+DESCRIPTOR
+DIAGNOSTICS
+DISCONNECT
+DISTINCT
+DOMAIN
+DOUBLE
+DROP
+ELSE
+END
+END-EXEC
+ESCAPE
+EXCEPT
+EXCEPTION
+EXEC
+EXECUTE
+EXISTS
+EXTERNAL
+EXTRACT
+FALSE
+FETCH
+FIRST
+FLOAT
+FOR
+FOREIGN
+FORTRAN
+FOUND
+FROM
+FULL
+GET
+GLOBAL
+GO
+GOTO
+GRANT
+GROUP
+HAVING
+HOUR
+IDENTITY
+IMMEDIATE
+IN
+INCLUDE
+INDEX
+INDICATOR
+INITIALLY
+INNER
+INPUT
+INSENSITIVE
+INSERT
+INT
+INTEGER
+INTERSECT
+INTERVAL
+INTO
+IS
+ISOLATION
+JOIN
+KEY
+LANGUAGE
+LAST
+LEADING
+LEFT
+LEVEL
+LIKE
+LOCAL
+LOWER
+MATCH
+MAX
+MIN
+MINUTE
+MODULE
+MONTH
+NAMES
+NATIONAL
+NATURAL
+NCHAR
+NEXT
+NO
+NONE
+NOT
+NULL
+NULLIF
+NUMERIC
+OCTET_LENGTH
+OF
+ON
+ONLY
+OPEN
+OPTION
+OR
+ORDER
+OUTER
+OUTPUT
+OVERLAPS
+PAD
+PARTIAL
+PASCAL
+POSITION
+PRECISION
+PREPARE
+PRESERVE
+PRIMARY
+PRIOR
+PRIVILEGES
+PROCEDURE
+PUBLIC
+READ
+REAL
+REFERENCES
+RELATIVE
+RESTRICT
+REVOKE
+RIGHT
+ROLLBACK
+ROWS
+SCHEMA
+SCROLL
+SECOND
+SECTION
+SELECT
+SESSION
+SESSION_USER
+SET
+SIZE
+SMALLINT
+SOME
+SPACE
+SQL
+SQLCA
+SQLCODE
+SQLERROR
+SQLSTATE
+SQLWARNING
+SUBSTRING
+SUM
+SYSTEM_USER
+TABLE
+TEMPORARY
+THEN
+TIME
+TIMESTAMP
+TIMEZONE_HOUR
+TIMEZONE_MINUTE
+TO
+TRAILING
+TRANSACTION
+TRANSLATE
+TRANSLATION
+TRIM
+TRUE
+UNION
+UNIQUE
+UNKNOWN
+UPDATE
+UPPER
+USAGE
+USER
+USING
+VALUE
+VALUES
+VARCHAR
+VARYING
+VIEW
+WHEN
+WHENEVER
+WHERE
+WITH
+WORK
+WRITE
+YEAR
+ZONE
+```
+
+Future reserved keywords for MSSQL which may be used in the future and should be avoided.
+
+```ABSOLUTE
+ACTION
+ADMIN
+AFTER
+AGGREGATE
+ALIAS
+ALLOCATE
+ARE
+ARRAY
+ASENSITIVE
+ASSERTION
+ASYMMETRIC
+AT
+ATOMIC
+BEFORE
+BINARY
+BIT
+BLOB
+BOOLEAN
+BOTH
+BREADTH
+CALL
+CALLED
+CARDINALITY
+CASCADED
+CAST
+CATALOG
+CHAR
+CHARACTER
+CLASS
+CLOB
+COLLATION
+COLLECT
+COMPLETION
+CONDITION
+CONNECT
+CONNECTION
+CONSTRAINTS
+CONSTRUCTOR
+CORR
+CORRESPONDING
+COVAR_POP
+COVAR_SAMP
+CUBE
+CUME_DIST
+CURRENT_CATALOG
+CURRENT_DEFAULT_TRANSFORM_GROUP
+CURRENT_PATH
+CURRENT_ROLE
+CURRENT_SCHEMA
+CURRENT_TRANSFORM_GROUP_FOR_TYPE
+CYCLE
+DATA
+DATE
+DAY
+DEC
+DECIMAL
+DEFERRABLE
+DEFERRED
+DEPTH
+DEREF
+DESCRIBE
+DESCRIPTOR
+DESTROY
+DESTRUCTOR
+DETERMINISTIC
+DICTIONARY
+DIAGNOSTICS
+DISCONNECT
+DOMAIN
+DYNAMIC
+EACH
+ELEMENT
+END-EXEC
+EQUALS
+EVERY
+EXCEPTION
+FALSE
+FILTER
+FIRST
+FLOAT
+FOUND
+FREE
+FULLTEXTTABLE
+FUSION
+GENERAL
+GET
+GLOBAL
+GO
+GROUPING
+HOLD
+HOST
+HOUR
+IGNORE
+IMMEDIATE
+INDICATOR
+INITIALIZE
+INITIALLY
+INOUT
+INPUT
+INT
+INTEGER
+INTERSECTION
+INTERVAL
+ISOLATION
+ITERATE
+LANGUAGE
+LARGE
+LAST
+LATERAL
+LEADING
+LESS
+LEVEL
+LIKE_REGEX
+LIMIT
+LN
+LOCAL
+LOCALTIME
+LOCALTIMESTAMP
+LOCATOR
+MAP
+MATCH
+MEMBER
+METHOD
+MINUTE
+MOD
+MODIFIES
+MODIFY
+MODULE
+MONTH
+MULTISET
+NAMES
+NATURAL
+NCHAR
+NCLOB
+NEW
+NEXT
+NO
+NONE
+NORMALIZE
+NUMERIC
+OBJECT
+OCCURRENCES_REGEX
+OLD
+ONLY
+OPERATION
+ORDINALITY
+OUT
+OVERLAY
+OUTPUT
+PAD
+PARAMETER
+PARAMETERS
+PARTIAL
+PARTITION
+PATH
+POSTFIX
+PREFIX
+PREORDER
+PREPARE
+PERCENT_RANK
+PERCENTILE_CONT
+PERCENTILE_DISC
+POSITION_REGEX
+PRESERVE
+PRIOR
+PRIVILEGES
+RANGE
+READS
+REAL
+RECURSIVE
+REF
+REFERENCING
+REGR_AVGX
+REGR_AVGY
+REGR_COUNT
+REGR_INTERCEPT
+REGR_R2
+REGR_SLOPE
+REGR_SXX
+REGR_SXY
+REGR_SYY
+RELATIVE
+RELEASE
+RESULT
+RETURNS
+ROLE
+ROLLUP
+ROUTINE
+ROW
+ROWS
+SAVEPOINT
+SCROLL
+SCOPE
+SEARCH
+SECOND
+SECTION
+SENSITIVE
+SEQUENCE
+SESSION
+SETS
+SIMILAR
+SIZE
+SMALLINT
+SPACE
+SPECIFIC
+SPECIFICTYPE
+SQL
+SQLEXCEPTION
+SQLSTATE
+SQLWARNING
+START
+STATE
+STATEMENT
+STATIC
+STDDEV_POP
+STDDEV_SAMP
+STRUCTURE
+SUBMULTISET
+SUBSTRING_REGEX
+SYMMETRIC
+SYSTEM
+TEMPORARY
+TERMINATE
+THAN
+TIME
+TIMESTAMP
+TIMEZONE_HOUR
+TIMEZONE_MINUTE
+TRAILING
+TRANSLATE_REGEX
+TRANSLATION
+TREAT
+TRUE
+UESCAPE
+UNDER
+UNKNOWN
+UNNEST
+USAGE
+USING
+VALUE
+VAR_POP
+VAR_SAMP
+VARCHAR
+VARIABLE
+WHENEVER
+WIDTH_BUCKET
+WITHOUT
+WINDOW
+WITHIN
+WORK
+WRITE
+XMLAGG
+XMLATTRIBUTES
+XMLBINARY
+XMLCAST
+XMLCOMMENT
+XMLCONCAT
+XMLDOCUMENT
+XMLELEMENT
+XMLEXISTS
+XMLFOREST
+XMLITERATE
+XMLNAMESPACES
+XMLPARSE
+XMLPI
+XMLQUERY
+XMLSERIALIZE
+XMLTABLE
+XMLTEXT
+XMLVALIDATE
+YEAR
+ZONE
+```
+
+[self]: http://www.sqlstyle.guide
     "SQL style guide by Simon Holywell"
 [licence]: http://creativecommons.org/licenses/by-sa/4.0/
     "Creative Commons Attribution-ShareAlike 4.0 International License"
