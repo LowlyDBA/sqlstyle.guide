@@ -1,8 +1,13 @@
-# SQL style guide
+# T-SQL style guide
 
 **[☛ Read the guide](https://lowlydba.github.io/tsqlstyle.guide)**
 
 ---
+## Purpose
+
+This guide is an offshoot of the SQL style guide by Simon Holywell, which is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License. Based on a work at [http://www.sqlstyle.guide](http://www.sqlstyle.guide). In accordance with the original work, this version is under the same license. 
+
+The T-SQL Style Guide has been adapted as needed for T-SQL specific functionality, best practices, and occasionally opinions of the author. Much like Simon's version, many areas are merely suggestions as there will always be outside factors impacting T-SQL development and design. 
 
 ## General
 

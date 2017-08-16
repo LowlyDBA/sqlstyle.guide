@@ -4,7 +4,7 @@
 
 Intended as a guide towards clean, concise T-SQL coding standards that are as version-independent as possible. 
 
-Original SQL style guide by Simon Holywell is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License. Based on a work at http://www.sqlstyle.guide.
+Original SQL style guide by Simon Holywell is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License. Based on a work at [http://www.sqlstyle.guide][styleguide].
 
 ## General
 
@@ -12,6 +12,7 @@ Original SQL style guide by Simon Holywell is licensed under a Creative Commons 
 
 * Use consistent and descriptive identifiers and names.
 * Wrap object names in square brackets.
+* Use two-part names for isolated databases and three-part names when outside databases are being utilized.
 * Make judicious use of white space and indentation to make code easier to read.
 * Store [ISO-8601][iso-8601] compliant time and date information
   (`YYYY-MM-DD HH:MM:SS.SSSSS`).
@@ -20,7 +21,7 @@ Original SQL style guide by Simon Holywell is licensed under a Creative Commons 
 * Keep code succinct and devoid of redundant SQL—such as unnecessary quoting or
   parentheses or `WHERE` clauses that can otherwise be derived.
 * Include comments in SQL code where necessary. Use the C style opening `/*` and
-  closing `*/` where possible otherwise preceed comments with `--` and finish
+  closing `*/` where possible otherwise precede comments with `--` and finish
   them with a new line.
 
 ```sql
@@ -62,6 +63,7 @@ UPDATE file_system
   name becomes `first_name`).
 * Avoid abbreviations and if you have to use them make sure they are commonly
   understood.
+* Use underscores to separate words.
 
 ```sql
 SELECT first_name
@@ -70,8 +72,8 @@ SELECT first_name
 
 ### Tables
 
-* Use a collective name or, less ideally, a plural form. For example (in order of
-  preference) `staff` and `employees`.
+* Use a collective name or, less ideally, a singular form. For example (in order of
+  preference) `staff` and `employee`.
 * Do not prefix with `tbl` or any other such descriptive prefix or Hungarian
   notation.
 * Never give a table the same name as one of its columns and vice versa.
@@ -109,8 +111,7 @@ SELECT SUM(s.monitor_tally) AS monitor_total
 ### Stored procedures
 
 * The name must contain a verb.
-* Do not prefix with `sp_` or any other such descriptive prefix or Hungarian
-  notation.
+* Only prefix with `usp_` and not `sp_` which [may conflict with system stored procedures][sp_].
 
 ### Uniform suffixes
 
@@ -197,7 +198,7 @@ Always include newlines/vertical space:
 * to separate code into related sections, which helps to ease the readability of
   large chunks of code.
 
-Keeping all the keywords aligned to the righthand side and the values left aligned
+Keeping all the keywords aligned to the right-hand side and the values left aligned
 creates a uniform gap down the middle of query. It makes it much easier to scan
 the query definition over quickly too.
 
@@ -266,12 +267,12 @@ SELECT r.last_name,
 
 ### Preferred formalisms
 
-* Use >= AND < instead of [BETWEEN for date ranges](http://sqlblog.com/blogs/aaron_bertrand/archive/2009/10/16/bad-habits-to-kick-mishandling-date-range-queries.aspx).
+* Use >= AND < instead of [BETWEEN for date ranges][between].
 * Similarly use `IN()` instead of multiple `OR` clauses.
 * Where a value needs to be interpreted before leaving the database use the `CASE`
   expression. `CASE` statements can be nested to form more complex logical structures.
 * Avoid the use of `UNION` clauses and temporary tables where possible. If the
-  schema can be optimised to remove the reliance on these features then it most
+  schema can be optimized to remove the reliance on these features then it most
   likely should be.
 
 ```sql
@@ -300,6 +301,7 @@ Indent column definitions by four (4) spaces within the `CREATE` definition.
 * Only use `REAL` or `FLOAT` types where it is strictly necessary for floating
   point mathematics otherwise prefer `NUMERIC` and `DECIMAL` at all times. Floating
   point rounding errors are a nuisance!
+* Do not use deprecated data types `NTEXT`, `TEXT`, and `IMAGE`. Use their equivalents (`NVARCHAR(MAX)`, `VARCHAR(MAX)`, and `VARBINARY(MAX)`) instead.
 
 ### Specifying default values
 
@@ -402,7 +404,7 @@ CREATE TABLE staff (
 
 ### Reserved keyword reference
 
-A list of ANSI SQL (92, 99 and 2003), MySQL 3 to 5.x, PostgreSQL 8.1, MS SQL Server 2000, MS ODBC and Oracle 10.2 reserved keywords.
+A list of ANSI SQL (92, 99 and 2003) reserved keywords and T-SQL reserved keywords as of SQL Server 2008. 
 
 ```sql
 A
@@ -929,6 +931,7 @@ PERCENT
 PERCENT_RANK
 PERCENTILE_CONT
 PERCENTILE_DISC
+PIVOT
 PLACING
 PLAN
 PLI
@@ -1002,6 +1005,7 @@ RETURNED_LENGTH
 RETURNED_OCTET_LENGTH
 RETURNED_SQLSTATE
 RETURNS
+REVERT
 REVOKE
 RIGHT
 RLIKE
@@ -1037,8 +1041,12 @@ SECOND
 SECOND_MICROSECOND
 SECTION
 SECURITY
+SECURITYAUDIT
 SELECT
 SELF
+SEMANTICKEYPHRASETABLE
+SEMANTICSIMILARITYDETAILSTABLE
+SEMANTICSIMILARITYTABLE
 SENSITIVE
 SEPARATOR
 SEQUENCE
@@ -1161,6 +1169,7 @@ TRIM
 TRUE
 TRUNCATE
 TRUSTED
+TRY_CONVERT
 TSEQUAL
 TYPE
 UESCAPE
@@ -1177,6 +1186,7 @@ UNLISTEN
 UNLOCK
 UNNAMED
 UNNEST
+UNPIVOT
 UNSIGNED
 UNTIL
 UPDATE
@@ -1220,6 +1230,7 @@ WIDTH_BUCKET
 WINDOW
 WITH
 WITHIN
+WITHIN GROUP
 WITHOUT
 WORK
 WRITE
@@ -1232,437 +1243,7 @@ ZEROFILL
 ZONE
 ```
 
-A list of reserved keywords for SQL 2008 +
-
-```sql
-ADD
-ALL
-ALTER
-AND
-ANY
-AS
-ASC
-AUTHORIZATION
-BACKUP
-BEGIN
-BETWEEN
-BREAK
-BROWSE
-BULK
-BY
-CASCADE
-CASE
-CHECK
-CHECKPOINT
-CLOSE
-CLUSTERED
-COALESCE
-COLLATE
-COLUMN
-COMMIT
-COMPUTE
-CONSTRAINT
-CONTAINS
-CONTAINSTABLE
-CONTINUE
-CONVERT
-CREATE
-CROSS
-CURRENT
-CURRENT_DATE
-CURRENT_TIME
-CURRENT_TIMESTAMP
-CURRENT_USER
-CURSOR
-DATABASE
-DBCC
-DEALLOCATE
-DECLARE
-DEFAULT
-DELETE
-DENY
-DESC
-DISK
-DISTINCT
-DISTRIBUTED
-DOUBLE
-DROP
-DUMP
-ELSE
-END
-ERRLVL
-ESCAPE
-EXCEPT
-EXEC
-EXECUTE
-EXISTS
-EXIT
-EXTERNAL
-FETCH
-FILE
-FILLFACTOR
-FOR
-FOREIGN
-FREETEXT
-FREETEXTTABLE
-FROM
-FULL
-FUNCTION
-GOTO
-GRANT
-GROUP
-HAVING
-HOLDLOCK
-IDENTITY
-IDENTITY_INSERT
-IDENTITYCOL
-IF
-IN
-INDEX
-INNER
-INSERT
-INTERSECT
-INTO
-IS
-JOIN
-KEY
-KILL
-LEFT
-LIKE
-LINENO
-LOAD
-MERGE
-NATIONAL
-NOCHECK
-NONCLUSTERED
-NOT
-NULL
-NULLIF
-OF
-OFF
-OFFSETS
-ON
-OPEN
-OPENDATASOURCE
-OPENQUERY
-OPENROWSET
-OPENXML
-OPTION
-OR
-ORDER
-OUTER
-OVER
-PERCENT
-PIVOT
-PLAN
-PRECISION
-PRIMARY
-PRINT
-PROC
-PROCEDURE
-PUBLIC
-RAISERROR
-READ
-READTEXT
-RECONFIGURE
-REFERENCES
-REPLICATION
-RESTORE
-RESTRICT
-RETURN
-REVERT
-REVOKE
-RIGHT
-ROLLBACK
-ROWCOUNT
-ROWGUIDCOL
-RULE
-SAVE
-SCHEMA
-SECURITYAUDIT
-SELECT
-SEMANTICKEYPHRASETABLE
-SEMANTICSIMILARITYDETAILSTABLE
-SEMANTICSIMILARITYTABLE
-SESSION_USER
-SET
-SETUSER
-SHUTDOWN
-SOME
-STATISTICS
-SYSTEM_USER
-TABLE
-TABLESAMPLE
-TEXTSIZE
-THEN
-TO
-TOP
-TRAN
-TRANSACTION
-TRIGGER
-TRUNCATE
-TRY_CONVERT
-TSEQUAL
-UNION
-UNIQUE
-UNPIVOT
-UPDATE
-UPDATETEXT
-USE
-USER
-VALUES
-VARYING
-VIEW
-WAITFOR
-WHEN
-WHERE
-WHILE
-WITH
-WITHIN GROUP
-WRITETEXT
-```
-
-A list of ISO reserved keywords for ODBC compatibility:
-
-```sql
-ABSOLUTE
-ACTION
-ADA
-ADD
-ALL
-ALLOCATE
-ALTER
-AND
-ANY
-ARE
-AS
-ASC
-ASSERTION
-AT
-AUTHORIZATION
-AVG
-BEGIN
-BETWEEN
-BIT
-BIT_LENGTH
-BOTH
-BY
-CASCADE
-CASCADED
-CASE
-CAST
-CATALOG
-CHAR
-CHAR_LENGTH
-CHARACTER
-CHARACTER_LENGTH
-CHECK
-CLOSE
-COALESCE
-COLLATE
-COLLATION
-COLUMN
-COMMIT
-CONNECT
-CONNECTION
-CONSTRAINT
-CONSTRAINTS
-CONTINUE
-CONVERT
-CORRESPONDING
-COUNT
-CREATE
-CROSS
-CURRENT
-CURRENT_DATE
-CURRENT_TIME
-CURRENT_TIMESTAMP
-CURRENT_USER
-CURSOR
-DATE
-DAY
-DEALLOCATE
-DEC
-DECIMAL
-DECLARE
-DEFAULT
-DEFERRABLE
-DEFERRED
-DELETE
-DESC
-DESCRIBE
-DESCRIPTOR
-DIAGNOSTICS
-DISCONNECT
-DISTINCT
-DOMAIN
-DOUBLE
-DROP
-ELSE
-END
-END-EXEC
-ESCAPE
-EXCEPT
-EXCEPTION
-EXEC
-EXECUTE
-EXISTS
-EXTERNAL
-EXTRACT
-FALSE
-FETCH
-FIRST
-FLOAT
-FOR
-FOREIGN
-FORTRAN
-FOUND
-FROM
-FULL
-GET
-GLOBAL
-GO
-GOTO
-GRANT
-GROUP
-HAVING
-HOUR
-IDENTITY
-IMMEDIATE
-IN
-INCLUDE
-INDEX
-INDICATOR
-INITIALLY
-INNER
-INPUT
-INSENSITIVE
-INSERT
-INT
-INTEGER
-INTERSECT
-INTERVAL
-INTO
-IS
-ISOLATION
-JOIN
-KEY
-LANGUAGE
-LAST
-LEADING
-LEFT
-LEVEL
-LIKE
-LOCAL
-LOWER
-MATCH
-MAX
-MIN
-MINUTE
-MODULE
-MONTH
-NAMES
-NATIONAL
-NATURAL
-NCHAR
-NEXT
-NO
-NONE
-NOT
-NULL
-NULLIF
-NUMERIC
-OCTET_LENGTH
-OF
-ON
-ONLY
-OPEN
-OPTION
-OR
-ORDER
-OUTER
-OUTPUT
-OVERLAPS
-PAD
-PARTIAL
-PASCAL
-POSITION
-PRECISION
-PREPARE
-PRESERVE
-PRIMARY
-PRIOR
-PRIVILEGES
-PROCEDURE
-PUBLIC
-READ
-REAL
-REFERENCES
-RELATIVE
-RESTRICT
-REVOKE
-RIGHT
-ROLLBACK
-ROWS
-SCHEMA
-SCROLL
-SECOND
-SECTION
-SELECT
-SESSION
-SESSION_USER
-SET
-SIZE
-SMALLINT
-SOME
-SPACE
-SQL
-SQLCA
-SQLCODE
-SQLERROR
-SQLSTATE
-SQLWARNING
-SUBSTRING
-SUM
-SYSTEM_USER
-TABLE
-TEMPORARY
-THEN
-TIME
-TIMESTAMP
-TIMEZONE_HOUR
-TIMEZONE_MINUTE
-TO
-TRAILING
-TRANSACTION
-TRANSLATE
-TRANSLATION
-TRIM
-TRUE
-UNION
-UNIQUE
-UNKNOWN
-UPDATE
-UPPER
-USAGE
-USER
-USING
-VALUE
-VALUES
-VARCHAR
-VARYING
-VIEW
-WHEN
-WHENEVER
-WHERE
-WITH
-WORK
-WRITE
-YEAR
-ZONE
-```
-
-Future reserved keywords for MSSQL which may be used in the future and should be avoided.
+A list of [future keywords][future keywords] which may be introduced in new versions of SQL Server and should be avoided if possible.
 
 ```sql
 ABSOLUTE
@@ -1944,3 +1525,21 @@ ZONE
     "SQL style guide by Simon Holywell"
 [licence]: http://creativecommons.org/licenses/by-sa/4.0/
     "Creative Commons Attribution-ShareAlike 4.0 International License"
+[sp_]: https://msdn.microsoft.com/en-us/library/dd172115(v=vs.100).aspx
+	"Avoid using sp_ as a prefix for stored procedures"
+[styleguide]: http://www.sqlstyle.guide
+	"SQL Style Guide"
+[between]: http://sqlblog.com/blogs/aaron_bertrand/archive/2009/10/16/bad-habits-to-kick-mishandling-date-range-queries.aspx
+	"Bad Habits to Kick: Mishandling Date Range Queries"
+[eav]: https://en.wikipedia.org/wiki/Entity%E2%80%93attribute%E2%80%93value_model
+	"Entity Attribute Value Model"
+[celko]: https://www.amazon.com/gp/product/0120887975/ref=as_li_ss_tl?ie=UTF8&linkCode=ll1&tag=treffynnon-20&linkId=9c88eac8cd420e979675c815771313d5
+    "Joe Celko's SQL Programming Style (The Morgan Kaufmann Series in Data Management Systems)"
+[iso-8601]: https://en.wikipedia.org/wiki/ISO_8601
+    "Wikipedia: ISO 8601"
+[rivers]: http://practicaltypography.com/one-space-between-sentences.html
+    "Practical Typography: one space between sentences"
+[reserved-keywords]: #reserved-keyword-reference
+    "Reserved keyword reference" 
+[future keywords]: https://docs.microsoft.com/en-us/sql/t-sql/language-elements/reserved-keywords-transact-sql#future-keywords
+	"Reserved future keywords in Transact-SQL"
