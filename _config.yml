@@ -1,6 +1,9 @@
 name:          T-SQL style guide by John McCall
 description:   A consistent code style guide for T-SQL to ensure legible and maintainable projects
 
+url:           http://lowlydba.github.io/sqlstyle.guide
+domain:        lowlydba.github.io
+
 markdown:      kramdown
 permalink:     pretty
 highlighter:   rouge
