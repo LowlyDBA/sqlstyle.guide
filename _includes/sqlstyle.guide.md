@@ -25,16 +25,16 @@ Original SQL style guide by Simon Holywell is licensed under a Creative Commons 
   them with a new line.
 
 ```sql
-SELECT file_hash  -- stored ssdeep hash
-  FROM file_system
- WHERE file_name = '.vimrc';
+SELECT [file_hash]  -- stored ssdeep hash
+  FROM [dbo].[file_system]
+ WHERE [file_name] = '.vimrc';
 ```
 ```sql
 /* Updating the file record after writing to the file */
-UPDATE file_system
-   SET file_modified_date = '1980-02-22 13:19:01.00000',
-       file_size = 209732
- WHERE file_name = '.vimrc';
+UPDATE [file_system]
+   SET [file_modified_date] = '1980-02-22 13:19:01.00000',
+       [file_size] = 209732
+ WHERE [dbo].[file_name] = '.vimrc';
 ```
 
 ### Avoid
@@ -66,8 +66,8 @@ UPDATE file_system
 * Use underscores to separate words.
 
 ```sql
-SELECT first_name
-  FROM staff;
+SELECT [first_name]
+  FROM [dbo].[staff];
 ```
 
 ### Tables
@@ -79,6 +79,8 @@ SELECT first_name
 * Never give a table the same name as one of its columns and vice versa.
 * Avoid, where possible, concatenating two table names together to create the name
   of a relationship table. Rather than `cars_mechanics` prefer `services`.
+* Avoid using underscores in names, unless to designate a suffix to differentiate
+  two versions of a table, such as `staff` and `staff_backup20170101`. 
 
 ### Columns
 
@@ -93,25 +95,26 @@ SELECT first_name
 * As a rule of thumb the correlation name should be the first letter of each word
   in the object's name.
 * If there is already a correlation with the same name then append a number.
-* Always include the `AS` keyword—makes it easier to read as it is explicit.
+* Always include use an explicit alias keyword to make it easier to read. For example 
+  (in order of preference) `[dbo].[employee] AS [emp]` and `[emp] = [dbo].[employee]`. The former is ANSI compliant, the latter is only specific to T-SQL. 
 * For computed data (`SUM()` or `AVG()`) use the name you would give it were it
   a column defined in the schema.
 
 ```sql
-SELECT first_name AS fn
-  FROM staff AS s1
-  JOIN students AS s2
-    ON s2.mentor_id = s1.staff_num;
+SELECT [first_name] AS [fn]
+  FROM [staff] AS [s1]
+  JOIN [dbo].[students] AS [s2]
+    ON [s2].[mentor_id] = [s1].[staff_num];
 ```
 ```sql
-SELECT SUM(s.monitor_tally) AS monitor_total
-  FROM staff AS s;
+SELECT SUM([s].[monitor_tally]) AS [monitor_total]
+  FROM [staff] AS [s];
 ```
 
 ### Stored procedures
 
 * The name must contain a verb.
-* Only prefix with `usp_` and not `sp_` which [may conflict with system stored procedures][sp_].
+* Prefix with `usp_` and not `sp_` which [may conflict with system stored procedures][sp_].
 
 ### Uniform suffixes
 
@@ -145,9 +148,9 @@ Do not use database server specific keywords where an ANSI SQL keyword already
 exists performing the same function. This helps to make code more portable.
 
 ```sql
-SELECT model_num
-  FROM phones AS p
- WHERE p.release_date > '2014-09-30';
+SELECT [model_num]
+  FROM [dbo].[phones] AS p
+ WHERE [p].[release_date] > '2014-09-30';
 ```
 
 ### White space
@@ -163,11 +166,11 @@ the readers eye to scan over the code and separate the keywords from the
 implementation detail. Rivers are [bad in typography][rivers], but helpful here.
 
 ```sql
-SELECT f.average_height, f.average_diameter
-  FROM flora AS f
- WHERE f.species_name = 'Banksia'
-    OR f.species_name = 'Sheoak'
-    OR f.species_name = 'Wattle';
+SELECT [f].[average_height], [f].[average_diameter]
+  FROM [flora] AS f
+ WHERE [f].[species_name] = 'Banksia'
+    OR [f].[species_name] = 'Sheoak'
+    OR [f].[species_name] = 'Wattle';
 ```
 
 Notice that `SELECT`, `FROM`, etc. are all right aligned while the actual column
@@ -181,10 +184,10 @@ Although not exhaustive always include spaces:
   comma or semicolon.
 
 ```sql
-SELECT a.title, a.release_date, a.recording_date
-  FROM albums AS a
- WHERE a.title = 'Charcoal Lane'
-    OR a.title = 'The New Danger';
+SELECT [a].[title], [a].[release_date], [a].[recording_date]
+  FROM [albums] AS [a]
+ WHERE [a].[title] = 'Charcoal Lane'
+    OR [a].[title] = 'The New Danger';
 ```
 
 #### Line spacing
@@ -203,23 +206,23 @@ creates a uniform gap down the middle of query. It makes it much easier to scan
 the query definition over quickly too.
 
 ```sql
-INSERT INTO albums (title, release_date, recording_date)
+INSERT INTO [dbo].[albums] ([title], [release_date], [recording_date])
 VALUES ('Charcoal Lane', '1990-01-01 01:01:01.00000', '1990-01-01 01:01:01.00000'),
        ('The New Danger', '2008-01-01 01:01:01.00000', '1990-01-01 01:01:01.00000');
 ```
 
 ```sql
-UPDATE albums
-   SET release_date = '1990-01-01 01:01:01.00000'
- WHERE title = 'The New Danger';
+UPDATE [dbo].[albums]
+   SET [release_date] = '1990-01-01 01:01:01.00000'
+ WHERE [title] = 'The New Danger';
 ```
 
 ```sql
-SELECT a.title,
-       a.release_date, a.recording_date, a.production_date -- grouped dates together
-  FROM albums AS a
- WHERE a.title = 'Charcoal Lane'
-    OR a.title = 'The New Danger';
+SELECT [a].[title],
+       [a].[release_date], [a].[recording_date], [a].[production_date] -- grouped dates together
+  FROM [albums] AS [a]
+ WHERE [a].[title] = 'Charcoal Lane'
+    OR [a].[title] = 'The New Danger';
 ```
 
 ### Indentation
@@ -233,15 +236,15 @@ Joins should be indented to the other side of the river and grouped with a new
 line where necessary.
 
 ```sql
-SELECT r.last_name
-  FROM riders AS r
-       INNER JOIN bikes AS b
-       ON r.bike_vin_num = b.vin_num
-          AND b.engines > 2
+SELECT [r].[last_name]
+  FROM [riders] AS [r]
+       INNER JOIN [bikes] AS [b]
+       ON [r].[bike_vin_num] = [b].[vin_num]
+          AND [b].[engines] > 2
 
-       INNER JOIN crew AS c
-       ON r.crew_chief_last_name = c.last_name
-          AND c.chief = 'Y';
+       INNER JOIN [crew] AS [c]
+       ON [r].[crew_chief_last_name] = [c].[last_name]
+          AND [c].[chief] = 'Y';
 ```
 
 #### Subqueries
@@ -267,9 +270,10 @@ SELECT r.last_name,
 
 ### Preferred formalisms
 
-* Use >= AND < instead of [BETWEEN for date ranges][between].
+* Use `>= AND <` instead of [BETWEEN for date ranges][between].
 * Similarly use `IN()` instead of multiple `OR` clauses.
-* Where a value needs to be interpreted before leaving the database use the `CASE`
+* Avoid pretty-printing data for the UI within queries. Where a value needs to be 
+  interpreted before leaving the database use the `CASE`
   expression. `CASE` statements can be nested to form more complex logical structures.
 * Avoid the use of `UNION` clauses and temporary tables where possible. If the
   schema can be optimized to remove the reliance on these features then it most
@@ -302,6 +306,8 @@ Indent column definitions by four (4) spaces within the `CREATE` definition.
   point mathematics otherwise prefer `NUMERIC` and `DECIMAL` at all times. Floating
   point rounding errors are a nuisance!
 * Do not use deprecated data types `NTEXT`, `TEXT`, and `IMAGE`. Use their equivalents (`NVARCHAR(MAX)`, `VARCHAR(MAX)`, and `VARBINARY(MAX)`) instead.
+* Explicitly define the (smallest possible) precision of a column for applicable data
+  types.
 
 ### Specifying default values
 
@@ -374,13 +380,13 @@ constraints along with field value validation.
 ##### Example
 
 ```sql
-CREATE TABLE staff (
-    PRIMARY KEY (staff_num),
-    staff_num      INT(5)       NOT NULL,
-    first_name     VARCHAR(100) NOT NULL,
-    pens_in_drawer INT(2)       NOT NULL,
-                   CONSTRAINT pens_in_drawer_range
-                   CHECK(pens_in_drawer >= 1 AND pens_in_drawer < 100)
+CREATE TABLE [dbo].[staff] (
+    PRIMARY KEY ([staff_num]),
+    [staff_num]      INT(5)       NOT NULL,
+    [first_name]     VARCHAR(100) NOT NULL,
+    [pens_in_drawer] INT(2)       NOT NULL,
+                   CONSTRAINT [pens_in_drawer_range]
+                   CHECK([pens_in_drawer] >= 1 AND [pens_in_drawer] < 100)
 );
 ```
 
