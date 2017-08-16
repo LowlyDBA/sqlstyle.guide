@@ -47,12 +47,12 @@ End styles from codeguide.co by @mdo
  * Typography
  */
 h1 {
-    font-family: 'Roboto Slab', serif;
+    font-family: 'Trebuchet MS', serif;
     font-weight: 400;
 }
 
 h2 {
-	font-family: 'Roboto Slab', serif;
+	font-family: 'Trebuchet MS', serif;
 	font-weight: 400;
 	border-bottom: 0.25em solid #e2e2e2;
 	padding-bottom: 0.3em;
