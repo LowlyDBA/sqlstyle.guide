@@ -24,6 +24,8 @@ Original SQL style guide by Simon Holywell is licensed under a Creative Commons 
   closing `*/` where possible otherwise precede comments with `--` and finish
   them with a new line.
 * End each statement with a semicolon. 
+* Use [control-of-flow] language when advanced scripting or programmability is used.
+* Supply `TRY...CATCH` keywords for operationalized DML statements.
 
 ```sql
 SELECT [file_hash]  -- stored ssdeep hash
@@ -279,6 +281,8 @@ SELECT [r].[last_name],
 * Avoid the use of `UNION` clauses and temporary tables where possible. If the
   schema can be optimized to remove the reliance on these features then it most
   likely should be.
+* Wrap stored procedure contents in `BEGIN...END` statements.
+* Use `INNER JOIN` instead of `JOIN` to more clearly match `LEFT JOIN` syntax.
 
 ```sql
 SELECT CASE [postcode]
@@ -1551,3 +1555,5 @@ ZONE
     "Reserved keyword reference" 
 [future keywords]: https://docs.microsoft.com/en-us/sql/t-sql/language-elements/reserved-keywords-transact-sql#future-keywords
 	"Reserved future keywords in Transact-SQL"
+[control-of-flow]: https://docs.microsoft.com/en-us/sql/t-sql/language-elements/control-of-flow
+	"Control-of-Flow"
