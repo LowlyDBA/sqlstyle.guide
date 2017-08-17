@@ -16,7 +16,7 @@ Original SQL style guide by Simon Holywell is licensed under a Creative Commons 
 * Make judicious use of white space and indentation to make code easier to read.
 * Store [ISO-8601][iso-8601] compliant time and date information
   (`YYYY-MM-DD HH:MM:SS.SSSSS`) with `DATE`, `TIME`, `DATETIME2`, and `DATETIMEOFFSET`.
-* Try to use standard SQL functions instead of vendor specific functions for
+* Try to use standard SQL functions instead of Microsoft specific functions for
   reasons of portability when functionality is the same.
 * Keep code succinct and devoid of redundant SQL—such as unnecessary quoting or
   parentheses or `WHERE` clauses that can otherwise be derived.
@@ -50,6 +50,7 @@ UPDATE [file_system]
   on vendor).
 * Object oriented design principles should not be applied to SQL or database
   structures.
+* Using `RAISERROR` on versions 2012 or greater—`THROW` is more flexible and succinct. 
 
 ## Naming conventions
 
