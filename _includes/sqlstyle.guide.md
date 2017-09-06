@@ -51,6 +51,7 @@ UPDATE [file_system]
 * Object oriented design principles should not be applied to SQL or database
   structures.
 * Using `RAISERROR` on versions 2012 or greater—`THROW` is more flexible and succinct. 
+* Commenting out old code or large statements that are not in use. Commenting <> source control.
 
 ## Naming conventions
 
